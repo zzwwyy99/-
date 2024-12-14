@@ -1,0 +1,12 @@
+.\objects\role_manager.o: ..\watch\game\role_manager.c
+.\objects\role_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\role_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\role_manager.o: ..\watch\game\game_system.h
+.\objects\role_manager.o: ..\watch\game\role_manager.h
+.\objects\role_manager.o: ..\watch\game\show_graph.h
+.\objects\role_manager.o: ..\watch\dev\display\display_system.h
+.\objects\role_manager.o: ..\watch\dev\display\display_device.h
+.\objects\role_manager.o: ..\watch\game\role_system.h
+.\objects\role_manager.o: ..\watch\drive\drive_delay.h
+.\objects\role_manager.o: ..\watch\dev\led\led_system.h
+.\objects\role_manager.o: ..\watch\dev\led\led_device.h

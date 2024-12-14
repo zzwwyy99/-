@@ -1,0 +1,4 @@
+--cpu Cortex-M3 -g --apcs=interwork --pd "__MICROLIB SETA 1"
+-ID:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include
+--pd "__UVISION_VERSION SETA 538" --pd "STM32F10X_MD SETA 1"
+--list .\listings\context_gcc.lst --xref -o .\objects\context_gcc.o --depend .\objects\context_gcc.d "..\rt-thread\3.1.5\bsp\a\context_gcc.S"

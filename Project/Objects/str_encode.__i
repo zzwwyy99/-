@@ -1,0 +1,4 @@
+--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\Libraries\CMSIS -I ..\Libraries\STM32F10x_StdPeriph_Driver\inc -I ..\User -I ..\watch\cal -I ..\watch\drive -I ..\watch\input -I ..\watch\kal -I ..\watch\unittest -I ..\watch\dev\led -I ..\watch\dev\button -I ..\watch\dev\i2c -I ..\watch\dev\display -I ..\watch\text -I ..\watch\fontlib
+-ID:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include
+-D__UVISION_VERSION="538" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD
+-o .\objects\str_encode.o --omf_browse .\objects\str_encode.crf --depend .\objects\str_encode.d "..\watch\text\str_encode.c"

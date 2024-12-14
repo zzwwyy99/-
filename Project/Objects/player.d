@@ -1,0 +1,10 @@
+.\objects\player.o: ..\watch\dev\player\player.c
+.\objects\player.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\player.o: ..\watch\drive\drive_delay.h
+.\objects\player.o: ..\watch\dev\led\led_system.h
+.\objects\player.o: ..\watch\dev\led\led_device.h
+.\objects\player.o: ..\watch\dev\beep\beep_system.h
+.\objects\player.o: ..\watch\dev\beep\beep_device.h
+.\objects\player.o: ..\watch\dev\player\decode.h
+.\objects\player.o: ..\watch\dev\player\player_system.h
+.\objects\player.o: ..\watch\dev\player\song_data.h

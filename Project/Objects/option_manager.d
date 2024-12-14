@@ -1,0 +1,15 @@
+.\objects\option_manager.o: ..\watch\menu\option_manager.c
+.\objects\option_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\option_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\option_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\option_manager.o: ..\rt-thread\3.1.5\include\rtthread.h
+.\objects\option_manager.o: ..\rt-thread\3.1.5\bsp\rtconfig.h
+.\objects\option_manager.o: ..\rt-thread\3.1.5\include\rtdebug.h
+.\objects\option_manager.o: ..\rt-thread\3.1.5\include\rtdef.h
+.\objects\option_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\option_manager.o: ..\rt-thread\3.1.5\include\rtservice.h
+.\objects\option_manager.o: ..\watch\drive\drive_delay.h
+.\objects\option_manager.o: ..\watch\menu\node_manager.h
+.\objects\option_manager.o: ..\watch\menu\option.h
+.\objects\option_manager.o: ..\watch\menu\option_manager.h
+.\objects\option_manager.o: ..\watch\message\message_manager.h

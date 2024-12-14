@@ -1,0 +1,11 @@
+.\objects\message_manager.o: ..\watch\message\message_manager.c
+.\objects\message_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\message_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\message_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\message_manager.o: ..\rt-thread\3.1.5\include\rtthread.h
+.\objects\message_manager.o: ..\rt-thread\3.1.5\bsp\rtconfig.h
+.\objects\message_manager.o: ..\rt-thread\3.1.5\include\rtdebug.h
+.\objects\message_manager.o: ..\rt-thread\3.1.5\include\rtdef.h
+.\objects\message_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\message_manager.o: ..\rt-thread\3.1.5\include\rtservice.h
+.\objects\message_manager.o: ..\watch\message\message_manager.h
