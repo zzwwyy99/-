@@ -68,6 +68,8 @@ void STD_I2CDMAEnable(void* DMA_CHx)
 	DMA_Cmd(DMA_CHx, DISABLE );  			//关闭 DMA 所指示的通道 	
  	DMA_SetCurrDataCounter(DMA_CHx,1025);	//DMA通道的DMA缓存的大小
  	DMA_Cmd(DMA_CHx, ENABLE); 				//使能 DMA 所指示的通道
+ 
+    I2C_DMACmd(I2C1,ENABLE);
 }
 
 

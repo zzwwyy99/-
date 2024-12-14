@@ -30,6 +30,13 @@
 .\objects\player_system.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\player_system.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h
 .\objects\player_system.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
+.\objects\player_system.o: ..\rt-thread\3.1.5\include\rtthread.h
+.\objects\player_system.o: ..\rt-thread\3.1.5\bsp\rtconfig.h
+.\objects\player_system.o: ..\rt-thread\3.1.5\include\rtdebug.h
+.\objects\player_system.o: ..\rt-thread\3.1.5\include\rtdef.h
+.\objects\player_system.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\player_system.o: ..\rt-thread\3.1.5\include\rtservice.h
+.\objects\player_system.o: ..\watch\menu\option.h
 .\objects\player_system.o: ..\watch\message\message_manager.h
 .\objects\player_system.o: ..\watch\input\input_system.h
 .\objects\player_system.o: ..\watch\input\input_device.h

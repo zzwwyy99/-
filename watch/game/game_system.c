@@ -1,5 +1,6 @@
 #include "stm32f10x.h"
 #include <stdio.h>
+#include <rtthread.h>
 
 #include "drive_delay.h"
 #include "show_text.h"
@@ -26,18 +27,20 @@ GraphBitMap g_tGraphSTART = {
 	.pbuffer = (unsigned char *)START
 };
 
+extern rt_sem_t g_tGameSem;
 int GameRunning(struct Game *ptGame)
 {
 	if(ptGame->eStatus != GAME_RUNNING){
 		ptGame->eStatus = GAME_RUNNING;
 
-		printf("游戏进入运行状态.");
+		printf("游戏进入运行状态.\r\n");
 		ClearInDisplayDev(g_ptOledDev,0,64,128,64);
         
         /* 恢复初始状态*/
         ptGame->ptIterator->traversal_recover_item(ptGame->ptIterator);	
         
         /* 发送信号量 */
+   		rt_sem_release(g_tGameSem);
 	}
  
 	return 0;
@@ -61,9 +64,7 @@ int GameStop(struct Game *ptGame)
 	ShowTextInDisplayDev(g_ptOledDev,86,40,"OVER");
 			
     //ptGame->ptIterator->traversal_recover_item(ptGame->ptIterator);	
-    
-	/* 发送信号量 */
-	
+   	
 	return 0;
 }
 
@@ -129,7 +130,7 @@ void GameThreadEntry(void *arg)
 {
     /* 显示启动画面 */
 	ShowGraphInDisplayDev(g_ptOledDev,0,64,&g_tGraphSTART);
-	delay(12000);
+	
 	//清除屏幕
     for(int iy=0;iy<g_ptOledDev->iYres;iy++){
         for(int ix = 0;ix < g_ptOledDev->iXres;ix++){
@@ -137,7 +138,12 @@ void GameThreadEntry(void *arg)
         }          
     }
 	
-	printf("Game Thread.\r\n");
+	printf("Game Thread启动.\r\n");
+    
+    /* 等待播放的信号量 */
+    rt_sem_take(g_tGameSem, RT_WAITING_FOREVER);
+    
+    rt_thread_delay(300);
     while(1){
 		//RUNNING状态
 		if(g_ptGame->eStatus == GAME_RUNNING){     
@@ -158,13 +164,18 @@ void GameThreadEntry(void *arg)
            
             //关闭中断
             //g_ptOledDev->flush(g_ptOledDev);       //被打断OLED画面会移位
-            delay(200);
+            //delay(200);
+            rt_thread_delay(10);
 		}
 		//STOP状态
 		else{
             //自动刷新
             //TIMER_FLUSH(ENABLE);
+
+			/* 等待播放的信号量 */
+           	rt_sem_take(g_tGameSem, RT_WAITING_FOREVER);
 		}       
 	}
 }
+
 

@@ -1,10 +1,12 @@
 .\objects\button_input.o: ..\watch\input\button_input.c
 .\objects\button_input.o: ..\watch\drive\drive_timer.h
 .\objects\button_input.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\button_input.o: ..\watch\thread\include\rtthread.h
-.\objects\button_input.o: ..\watch\thread\include\rtdef.h
-.\objects\button_input.o: ..\watch\thread\rtconfig.h
-.\objects\button_input.o: ..\watch\thread\include\rtservice.h
+.\objects\button_input.o: ..\rt-thread\3.1.5\include\rtthread.h
+.\objects\button_input.o: ..\rt-thread\3.1.5\bsp\rtconfig.h
+.\objects\button_input.o: ..\rt-thread\3.1.5\include\rtdebug.h
+.\objects\button_input.o: ..\rt-thread\3.1.5\include\rtdef.h
+.\objects\button_input.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\button_input.o: ..\rt-thread\3.1.5\include\rtservice.h
 .\objects\button_input.o: ..\watch\dev\button\button.h
 .\objects\button_input.o: ..\watch\dev\button\button_device.h
 .\objects\button_input.o: ..\Libraries\CMSIS\stm32f10x.h

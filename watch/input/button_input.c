@@ -33,10 +33,6 @@ static void ButtonInputDeviceCallBack(void *arg)
 
 	/* 放入环形缓冲区*/
 	PutInputBuffer(&event);
-	
-	//切换到业务子系统的线程.业务子系统处理按键输入
-	printf("中断:有按键输入.\r\n");
-	rt_schedule(&g_tLogicThread);
 }
 
 //用定时器2扫描.所以需要初始化定时器2

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <rtthread.h>
 
 #include "drive_delay.h"
 #include "node_manager.h"
@@ -69,17 +70,17 @@ static void GetBackOption(struct Option *ptOption)
 
 	/* 改变选项状态 */
 	if(current_option->status == OPTION_ENTER){
-		printf("切换到OPTION_CHOOSE状态.\r\n");
+		//printf("切换到OPTION_CHOOSE状态.\r\n");
 		current_option->status = OPTION_CHOOSE;
 	}	
 	/* 有父结点 */
 	else if(ptNode){
-		printf("有父节点.\r\n");
+		//printf("有父节点.\r\n");
 		current_option = node_obtain_option(ptNode, Option, node);
 	}
 	/* 没有父结点 */
 	else{
-		printf("没有父结点.\r\n");
+		//printf("没有父结点.\r\n");
 	}
 }
 
@@ -90,17 +91,17 @@ static void GetNextOption(struct Option *ptOption)
     ptNode = GetNodeRightSibling(&ptOption->node); //从树中取出结点
     
     if(current_option->status == OPTION_ENTER){
-		printf("切换到OPTION_CHOOSE状态.\r\n");
+		//printf("切换到OPTION_CHOOSE状态.\r\n");
 		current_option->status = OPTION_CHOOSE;
 	}
 	/* 有兄弟结点 */
 	if(ptNode){
-		printf("切换到兄弟结点.\r\n");
+		//printf("切换到兄弟结点.\r\n");
 		current_option = node_obtain_option(ptNode, Option, node);
 	}
 	/* 没有兄弟结点 */
 	else{
-		printf("没有兄弟结点.\r\n");
+		//printf("没有兄弟结点.\r\n");
 	}
 }
 
@@ -111,12 +112,12 @@ static void GetEnterOption(struct Option *ptOption)
     ptNode = GetNodeFirstChild(&ptOption->node);
 	/* 有子结点 */
 	if(ptNode){
-		printf("有子结点.\r\n");
+		//printf("有子结点.\r\n");
 		current_option = node_obtain_option(ptNode, Option, node);
 	}
 	/* 没有子结点 */
 	else{
-		printf("没有子结点.\r\n");
+		//printf("没有子结点.\r\n");
 		
 		current_option->status = OPTION_ENTER;
 	}
@@ -150,7 +151,7 @@ void InitMenuOption(void)
 	current_option = __GetOption("home");
 }
 
-//发送播放器状态给业务子系统
+//发送选项状态给业务子系统
 extern int enter_node_count;  //不等于0,则刷新一次屏幕.进入子结点的次数.
 extern int enter_status_count;
 
@@ -162,11 +163,16 @@ struct msg_topic g_tMsgMenu = {
 	.msg_data = &menu_data
 };
 
+extern rt_mailbox_t g_tMsgCentrerMb;
 //发布者
 void MenuPublish(void *arg)
 {
-	//唤醒消息中心线程
-	CoreProcss(arg);
+	/* 发送邮箱,唤醒消息中心线程 */
+    if(g_tMsgCentrerMb){
+        rt_mb_send(g_tMsgCentrerMb,(rt_uint32_t)&g_tMsgMenu);
+    }
+    
+    
 }
 
 struct Publisher g_tPublisherMenu = {
@@ -183,7 +189,9 @@ void MenuThreadInit(void)
 
 void MenuThreadEntry(void *arg)
 {
-	printf("Menu Thread.\r\n");
+	printf("Menu Thread启动.\r\n");
+	
+    rt_thread_delay(300);
 	while(1){
 		//printf("Menu Thread.\r\n");
 		
@@ -192,15 +200,11 @@ void MenuThreadEntry(void *arg)
 		}else{
 			current_option->enter(current_option);
 		}
-       
+ 
         //发送msg到业务子系统
         menu_data.EnterNodeCount = enter_node_count;
         menu_data.EnterStatusCount = enter_status_count;
-//        printf("EnterNodeCount:%d.\r\n",menu_data.EnterNodeCount);
-//        printf("EnterStatusCount:%d.\r\n",menu_data.EnterStatusCount);
         g_tPublisherMenu.Publish(&g_tMsgMenu);
-        
-        //delay(100);
 	}
 }
 

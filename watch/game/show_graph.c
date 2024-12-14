@@ -103,7 +103,7 @@ void  ClearInDisplayDev(PDisplayDevice ptDispalyDev,int ix,int iy,int width,int 
 	for(y = iy - height+1 ; y<iy; y++){
 		for(x = ix; x < ix+width; x++){
 			//ptDispalyDev->SetPixel(ptDispalyDev,x,y,1);
-			ptDispalyDev->SetPixel(ptDispalyDev,x,y,1);
+			ptDispalyDev->SetPixel(ptDispalyDev,x,y,0);
 		}
 	}
 }

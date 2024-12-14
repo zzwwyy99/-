@@ -16,7 +16,7 @@ PGame __GetGame(void)
 	if(inited){
 		return 0;
 	}
-	g_tGame.eStatus = GAME_RUNNING;
+	g_tGame.eStatus = GAME_FAIlED;
 	g_tGame.iHighestScore = 0;
 	g_tGame.iCurrentScore = 0;
 	g_tGame.iLevel = 0;

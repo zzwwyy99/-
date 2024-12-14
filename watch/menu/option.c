@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stm32f10x.h>
 #include <rthw.h>
+#include <rtthread.h>
 
 #include "graph_data.h"
 #include "show_graph.h"
@@ -11,12 +12,19 @@
 #include "display_system.h"
 #include "node_manager.h"
 #include "option_manager.h"
+#include "option.h"
 #include "dht11_device.h"
 #include "led_system.h"
+#include "player_system.h"
+#include "game_system.h"
 
 extern PDisplayDevice g_ptOledDev;
 int enter_node_count = 0;  //不等于0,则刷新一次屏幕.进入子结点的次数.
 int enter_status_count = 0;
+
+extern rt_event_t g_tBackEvent;
+extern rt_sem_t g_tPlayerSem;
+extern rt_sem_t g_tGameSem;
 
 /*************************
  * 0: HOME
@@ -135,8 +143,8 @@ void TempatureChooseFUN(struct Option *ptOption)
 
 void TempatureEnterFUN(struct Option *ptOption)
 {	   
-    rt_base_t level;
     char dht11_data[5];
+   // rt_base_t level;
     PLedDevice ptLed = GetLedDevice("RED");;  
   
     //表示进入子结点
@@ -152,8 +160,8 @@ void TempatureEnterFUN(struct Option *ptOption)
     //level = rt_hw_interrupt_disable();
 
     if(DHT11ReceiveData(dht11_data)){
-//      printf("Temperature:%d.%d   ",dht11_data[2],dht11_data[3]);
-//      printf("Humidity:%d.%d\r\n",dht11_data[0],dht11_data[1]);
+        /* 开中断 */
+       // rt_hw_interrupt_enable(level);
         
         ShowTextInDisplayDev(g_ptOledDev,0,16,"Temperature:");	
         ShowNumberInDisplayDev(g_ptOledDev,95,16,dht11_data[2]);	
@@ -168,8 +176,7 @@ void TempatureEnterFUN(struct Option *ptOption)
     }
 
     Delay_ms(1000);
-    /* 开中断 */
-    //rt_hw_interrupt_enable(level);
+   
     
 }
 
@@ -253,12 +260,10 @@ void PlayerChooseFUN(struct Option *ptOption)
 	}
     
 	ClearInDisplayDev(g_ptOledDev,40,64,48,48);
-	ShowGraphInDisplayDev(g_ptOledDev,48,56,&g_tMenuGraphPLAYER);
-	
+	ShowGraphInDisplayDev(g_ptOledDev,48,56,&g_tMenuGraphPLAYER);	
 }
 
-extern struct rt_thread g_tPlayerThread;
-extern struct rt_thread *g_ptScheduleThread;
+extern int ElementFlag;
 void PlayerEnterFUN(struct Option *ptOption)
 {	
     //进入子结点
@@ -267,13 +272,28 @@ void PlayerEnterFUN(struct Option *ptOption)
 		enter_node_count++;
         
         printf("开始播放歌曲.\r\n");
-        ShowTextInDisplayDev(g_ptOledDev,0,16,"Player...");
+        ShowTextInDisplayDev(g_ptOledDev,0,48,"Player...");
+
+        //启动播放器线程
+		DefaultPlayerControl(PLAYER_CMD_PLAY,RT_NULL);
+
+        ElementFlag = 1;
         
-        //线程切换
-        //记录要切换去的线程
-        g_ptScheduleThread = &g_tPlayerThread;
-        //rt_schedule(&g_tPlayerThread);
-    }	
+        rt_uint32_t recved;
+		/* 等待接收事件标志,挂起自身线程 */
+    	rt_event_recv(g_tBackEvent,  			/* 事件对象句柄 */
+                   PLAYER_EVENT|GAME_EVENT,		/* 接收线程感兴趣的事件 */
+                   RT_EVENT_FLAG_OR|RT_EVENT_FLAG_CLEAR,	/* 接收选项 */
+                   RT_WAITING_FOREVER,			/* 指定超时事件,一直等 */
+                   &recved);  					/* 指向接收到的事件 */
+
+		/* 如果接收完成并且正确 */
+		if((recved & PLAYER_EVENT) || (recved & GAME_EVENT)){
+		 	rt_kprintf ( "返回菜单线程! \r\n");		
+		}else{
+			rt_kprintf ( "事件错误！\r\n");	
+		}
+    }
 }
 
 struct Option g_tOptionPLAYER = {
@@ -382,15 +402,31 @@ void GAMEStartOptionChooseFUN(struct Option *ptOption)
 	ShowTextInDisplayDev(g_ptOledDev,55,16,"<-");		 	
 }
 
-extern struct rt_thread g_tGameThread;
 void GAMEStartOptionEnterFUN(struct Option *ptOption)
 {  
     //表示进入子结点
 	if(enter_status_count == 0){
         enter_status_count++;
-        
-        //记录要切换去的线程
-		g_ptScheduleThread = &g_tGameThread;	
+		
+        //启动游戏线程
+		DefaultGameControl(GAME_CMD_RESTART);
+		
+        ElementFlag = 2;
+
+		rt_uint32_t recved;
+		/* 等待接收事件标志,挂起自身线程 */
+    	rt_event_recv(g_tBackEvent,  			/* 事件对象句柄 */
+                   PLAYER_EVENT|GAME_EVENT,		/* 接收线程感兴趣的事件 */
+                   RT_EVENT_FLAG_OR|RT_EVENT_FLAG_CLEAR,	/* 接收选项 */
+                   RT_WAITING_FOREVER,			/* 指定超时事件,一直等 */
+                   &recved);  					/* 指向接收到的事件 */
+
+		/* 如果接收完成并且正确 */
+		if((recved & PLAYER_EVENT) || (recved & GAME_EVENT)){
+		 	rt_kprintf ( "返回菜单线程! \r\n");		
+		}else{
+			rt_kprintf ( "事件错误！\r\n");	
+		}
 	}
 }
 

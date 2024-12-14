@@ -59,8 +59,8 @@ int main(void)
 #endif 
 
 
-
 #include <rtthread.h>
+#include <rthw.h>
 
 #include "usart_init.h"
 #include "button_system.h"
@@ -79,8 +79,9 @@ int main(void)
 #include "rtc_system.h"
 #include "dht11_device.h"
 #include "rtc_system.h"
+#include "rtc_system.h"
+#include "message_manager.h"
 
-#include <rthw.h>
 
 void BoradInit(void)
 {
@@ -128,59 +129,154 @@ void BoradInit(void)
 }
 
 
+/* 定义消息队列控制块 */
+rt_mq_t g_tQueueInput = RT_NULL;
+/* 定义事件控制块 */
+rt_event_t g_tBackEvent = RT_NULL;
+
+/* 定义信号量控制块 */
+rt_sem_t g_tPlayerSem = RT_NULL;
+rt_sem_t g_tGameSem = RT_NULL;
+
+/* 定义信号量控制块 */
+rt_mailbox_t g_tMsgCentrerMb = RT_NULL;
+
+//创建一个队列
+int InitInputQueue(void)
+{	
+	/* 输入事件消息队列 */
+	g_tQueueInput = rt_mq_create("QueueInput",      /* 消息队列名字 */
+                                 48,                /* 消息的最大长度 */
+                                 10,                /* 消息队列的最大容量 */
+                                 RT_IPC_FLAG_FIFO); /* 队列模式 FIFO(0x00)*/
+	if (g_tQueueInput != RT_NULL){
+		rt_kprintf("消息队列创建成功！\n\n");
+	}else{
+        rt_kprintf("消息队列创建失败！\n\n");
+    }
+
+	/* 创建一个事件 */
+	g_tBackEvent = rt_event_create("BackEvent",		/* 事件标志组名字 */
+                        RT_IPC_FLAG_PRIO); 			/* 事件模式 FIFO(0x00)*/
+  	if (g_tBackEvent != RT_NULL){
+		rt_kprintf("事件创建成功！\r\n");
+	}else{
+        rt_kprintf("事件创建失败！\r\n");
+    }
+	
+	/* 创建一个信号量 */
+	g_tPlayerSem = rt_sem_create("PlayerSem",	/* 信号量名字 */
+                     1,     					/* 信号量初始值，默认有一个信号量 */
+                     RT_IPC_FLAG_FIFO);		 	/* 信号量模式 FIFO(0x00)*/
+  	if (g_tPlayerSem != RT_NULL){
+		rt_kprintf("播放器信号量创建成功！\n\n");
+	}else{
+		rt_kprintf("播放器信号量创建失败！\n\n");
+	}
+	
+    /* 创建一个信号量 */
+	g_tGameSem = rt_sem_create("GameSem",		/* 信号量名字 */
+                     1,     					/* 信号量初始值，默认有一个信号量 */
+                     RT_IPC_FLAG_FIFO); 		/* 信号量模式 FIFO(0x00)*/
+  	if (g_tGameSem != RT_NULL){
+		rt_kprintf("游戏信号量创建成功！\n\n");
+	}else{
+		rt_kprintf("游戏信号量创建失败！\n\n");
+	}
+
+	/* 创建一个信号量 */
+	g_tMsgCentrerMb = rt_mb_create("MsgCentrerMb",		/* 信号量名字 */
+                     10,     					/* 信号量初始值，默认有一个信号量 */
+                     RT_IPC_FLAG_FIFO); 		/* 信号量模式 FIFO(0x00)*/
+  	if (g_tMsgCentrerMb != RT_NULL){
+		rt_kprintf("消息中心邮箱创建成功！\n\n");
+	}else{
+		rt_kprintf("消息中心邮箱创建失败！\n\n");
+	}
+	return 0;
+}
+
 /*定义线程控制块*/
-struct rt_thread g_tLogicThread;
-struct rt_thread g_tMenuThread;
-struct rt_thread g_tPlayerThread;
-struct rt_thread g_tGameThread;
-/*定义线程栈*/
-unsigned char LogicThreadStack[512];
-unsigned char MenuThreadStack[512];
-unsigned char PlayerThreadStack[512];
-unsigned char GameThreadStack[512];
-
-extern struct rt_thread *g_ptScheduleThread;
-
+rt_thread_t g_ptLogicThread;
+rt_thread_t g_ptMenuThread;
+rt_thread_t g_ptPlayerThread;
+rt_thread_t g_ptGameThread;
+rt_thread_t g_ptMessageCentrerThread;
 int main(void)
 {	
-	/* 设备初始化 */
-    BoradInit();
+    /* 初始化输入队列 */
+	InitInputQueue();
     
-    /* 调度器初始化 */
-    rt_system_scheduler_init();
+    g_ptLogicThread =                       /* 线程控制块指针 */
+    rt_thread_create( "logic_thread",       /* 线程名字 */
+                      LogicThreadEntry,     /* 线程入口函数 */
+                      RT_NULL,              /* 线程入口函数参数 */
+                      512,                  /* 线程栈大小 */
+                      1,                    /* 线程的优先级 */
+                      20);                  /* 线程时间片 */
     
-    /*初始化线程*/
-    rt_thread_init(&g_tLogicThread,
-   					"logic_thread",
-                    LogicThreadEntry,
-                    RT_NULL,
-                    LogicThreadStack,
-                    512);
+    /* 启动线程，开启调度 */
+    if (g_ptLogicThread != RT_NULL)
+        rt_thread_startup(g_ptLogicThread);
+    else
+        return -1;
+    
+    g_ptMenuThread =                        /* 线程控制块指针 */
+    rt_thread_create( "menu_thread",        /* 线程名字 */
+                      MenuThreadEntry,      /* 线程入口函数 */
+                      RT_NULL,              /* 线程入口函数参数 */
+                      512,                  /* 线程栈大小 */
+                      4,                    /* 线程的优先级 */
+                      20);                  /* 线程时间片 */
+    
+    /* 启动线程，开启调度 */
+    if (g_ptMenuThread != RT_NULL)
+        rt_thread_startup(g_ptMenuThread);
+    else
+        return -1;
+    
+    //printf("到这里了");
+    g_ptPlayerThread =                     	/* 线程控制块指针 */
+    rt_thread_create( "player_thread",    	/* 线程名字 */
+                      PlayerThreadEntry,   	/* 线程入口函数 */
+                      RT_NULL,             	/* 线程入口函数参数 */
+                      512,                 	/* 线程栈大小 */
+                      6,                   	/* 线程的优先级 */
+                      20);                 	/* 线程时间片 */
+    
+    /* 启动线程，开启调度 */
+    if (g_ptPlayerThread != RT_NULL)
+        rt_thread_startup(g_ptPlayerThread);
+    else
+        return -1;
 
-   rt_thread_init(&g_tMenuThread,
-   				"menu_thread",
-                MenuThreadEntry,
-                RT_NULL,
-                MenuThreadStack,
-                512);
-   
-   rt_thread_init(&g_tPlayerThread,
-   				"player_thread",
-                PlayerThreadEntry,
-                RT_NULL,
-                PlayerThreadStack,
-                512);
-   
-   rt_thread_init(&g_tGameThread,
-   				"game_thread",
-                GameThreadEntry,
-                RT_NULL,
-                GameThreadStack,
-                512);
+	g_ptGameThread =                        /* 线程控制块指针 */
+    rt_thread_create( "game_thread",		/* 线程名字 */
+                      GameThreadEntry,   	/* 线程入口函数 */
+                      RT_NULL,         		/* 线程入口函数参数 */
+                      512,             		/* 线程栈大小 */
+                      6,                   	/* 线程的优先级 */
+                      20);                 	/* 线程时间片 */
     
-    /* 启动系统调度器 */
-    g_ptScheduleThread = &g_tMenuThread;
-	rt_system_scheduler_start(&g_tMenuThread);
-	
+    /* 启动线程，开启调度 */
+    if (g_ptGameThread != RT_NULL)
+        rt_thread_startup(g_ptGameThread);
+    else
+        return -1;
+
+    //printf("到这里了");
+	g_ptMessageCentrerThread =                        /* 线程控制块指针 */
+    rt_thread_create( "Msg_thread",		/* 线程名字 */
+                      CoreProcssThreadEntry,   	/* 线程入口函数 */
+                      RT_NULL,         		/* 线程入口函数参数 */
+                      512,             		/* 线程栈大小 */
+                      1,                   	/* 线程的优先级 */
+                      20);                 	/* 线程时间片 */
+    
+    /* 启动线程，开启调度 */
+    if (g_ptMessageCentrerThread != RT_NULL)
+        rt_thread_startup(g_ptMessageCentrerThread);
+    else
+        return -1;
 }
 

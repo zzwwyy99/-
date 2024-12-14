@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <rtthread.h>
 
 #include "message_manager.h"
 
@@ -21,12 +22,13 @@ struct TopicSUBSCRIBER{
 	struct Subcriber *subciber_list[SUBSCRIBER_LIST_MAX];	//最多三个订阅者
 };
 
-//话题表
+//话题消息表
 struct TopicMessageTable{
 	int num;
 	struct TopicMSG TopicMessage_list[TOPIC_NUM_MAX];	//最多十个话题
 };
 
+//话题订阅者表
 struct TopicSubcriberTable{
 	int num;
 	struct TopicSUBSCRIBER TopicSubcriber_list[TOPIC_NUM_MAX];	//最多十个话题
@@ -101,43 +103,56 @@ int RegisterSubscriber(char *pcTopicName,struct Subcriber* ptSubcriber)
     }
 }
 
+extern rt_mailbox_t g_tMsgCentrerMb;
 
-void CoreProcss(void *arg)
+void CoreProcssThreadEntry(void *arg)
 {
 	int i,j;
-    int ret;
-	struct TopicMSG *ptTopicMessage = (struct TopicMSG *)arg;
+    int check;
+	rt_base_t ret;
+	struct TopicMSG *ptTopicMessage;
+
+    printf("消息中心 Thread启动.\r\n");
+   
+    //rt_mb_recv(g_tMsgCentrerMb,(rt_ubase_t *)&ptTopicMessage, RT_WAITING_FOREVER);
+    //rt_thread_delay(300);
+	while(1){
+		/* 等待播放的信号量 */
+        ret = rt_mb_recv(g_tMsgCentrerMb,(rt_ubase_t *)&ptTopicMessage, RT_WAITING_FOREVER);
 		
-	//每当发布者发布消息,唤醒此线程
-	//由TopicName,找到更新消息的话题,并更新Message
-	for(i=0;i<g_ptTopicMessageTable.num;i++){
-		ret = strcmp(g_ptTopicMessageTable.TopicMessage_list[i].TopicName,ptTopicMessage->TopicName);
-        
-        if(ret == 0){
-            break;
-        }    
+		if(RT_EOK == ret){
+			//每当发布者发布消息,唤醒此线程
+			//由TopicName,找到更新消息的话题,并更新Message
+			for(i=0;i<g_ptTopicMessageTable.num;i++){
+				check = strcmp(g_ptTopicMessageTable.TopicMessage_list[i].TopicName,ptTopicMessage->TopicName);
+		        
+		        if(check == 0){
+		            break;
+		        }    
+			}
+
+		    /* 找到同名话题 */
+		    if(check == 0){
+		        //printf("CoreProcss:存在名为%s话题.\r\n",ptTopicMessage->TopicName);
+
+		        /* 保存数据 */
+		        g_ptTopicMessageTable.TopicMessage_list[i].MessageData = ptTopicMessage->MessageData;
+
+		        /* 执行Handle */
+		        for(j=0;j<g_ptTopicSubcriberTable.TopicSubcriber_list[i].num;j++){
+		            //printf("CoreProcss:%s话题下%d号订阅者处理.\r\n",ptTopicMessage->TopicName,j);
+		            g_ptTopicSubcriberTable.TopicSubcriber_list[i].subciber_list[j]->HandleEvent(ptTopicMessage->MessageData);
+		        }
+
+		        if(j == 0){
+		            printf("CoreProcss:%s话题下没有订阅者.\r\n",ptTopicMessage->TopicName);
+		        }
+		    }
+		    else{
+		        printf("CoreProcss:不存在名为%s话题.\r\n",ptTopicMessage->TopicName);
+		        //return;
+		    }
+		}	
 	}
-
-    /* 找到同名话题 */
-    if(ret == 0){
-        //printf("CoreProcss:存在名为%s话题.\r\n",ptTopicMessage->TopicName);
-
-        /* 保存数据 */
-        g_ptTopicMessageTable.TopicMessage_list[i].MessageData = ptTopicMessage->MessageData;
-
-        /* 执行Handle */
-        for(j=0;j<g_ptTopicSubcriberTable.TopicSubcriber_list[i].num;j++){
-            //printf("CoreProcss:%s话题下%d号订阅者处理.\r\n",ptTopicMessage->TopicName,j);
-            g_ptTopicSubcriberTable.TopicSubcriber_list[i].subciber_list[j]->HandleEvent(ptTopicMessage->MessageData);
-        }
-
-        if(j == 0){
-            printf("CoreProcss:%s话题下没有订阅者.\r\n",ptTopicMessage->TopicName);
-        }
-    }
-    else{
-        printf("CoreProcss:不存在名为%s话题.\r\n",ptTopicMessage->TopicName);
-        return;
-    }	
 }
 
