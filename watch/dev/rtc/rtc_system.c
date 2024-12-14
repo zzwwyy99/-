@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 #include "stm32f10x.h"
-#include <rtthread.h>
 
 #include "drive_delay.h"
 #include "drive_rtc.h"
@@ -56,23 +55,11 @@ struct msg_topic g_tMsgRTC = {
 	.msg_data = &g_tNormTime
 };
 
-
-////发布者
-//void PlayerPublish(void *arg)
-//{
-//	//唤醒消息中心线程
-//	CoreProcss(arg);
-//}
-
-extern rt_mailbox_t g_tMsgCentrerMb;
 //发布者
 void RTCPublish(void *arg)
 {
-	/* 发送邮箱,唤醒消息中心线程 */
-    if(g_tMsgCentrerMb){
-        rt_mb_send(g_tMsgCentrerMb,(rt_uint32_t)&g_tMsgRTC);
-    }
-    
+	//唤醒消息中心线程
+	CoreProcss(arg);
 }
 
 struct Publisher g_tPublisherrRTC = {

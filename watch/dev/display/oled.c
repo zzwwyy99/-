@@ -43,7 +43,6 @@ static int OLEDDeviceSetPixel(struct DisplayDevice *ptDisplayDevice,int iX,int i
 		*byte &= ~(1 << bit);	//Çå0
 	}
     
-    
 	return 0;
 }
 

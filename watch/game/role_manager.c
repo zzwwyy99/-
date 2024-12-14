@@ -30,6 +30,7 @@ static void DefaultDinosaurCollisionEXCUTE(void)
 {
     IndicateLedClose();
     GameStop(&g_tGame);
+    //printf("发生碰撞.\r\n");
 }
 
 //role结构体中有一个excute_ops接口,memento_ops接口,所以这里也有两个
@@ -47,6 +48,7 @@ static void excute_item(void *arg,int index)
 				if(ptAggregate->role_list[index]->iCurrentX<28 && ptAggregate->role_list[index]->iCurrentX>0){
 					/* 发生碰撞回调函数 */
 					DefaultDinosaurCollisionEXCUTE();
+					//printf("发生碰撞.\r\n");
                 }
 			}	
 		}

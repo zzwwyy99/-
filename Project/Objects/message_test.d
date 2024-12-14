@@ -30,10 +30,4 @@
 .\objects\message_test.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
 .\objects\message_test.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\message_test.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\message_test.o: ..\rt-thread\3.1.5\include\rtthread.h
-.\objects\message_test.o: ..\rt-thread\3.1.5\bsp\rtconfig.h
-.\objects\message_test.o: ..\rt-thread\3.1.5\include\rtdebug.h
-.\objects\message_test.o: ..\rt-thread\3.1.5\include\rtdef.h
-.\objects\message_test.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
-.\objects\message_test.o: ..\rt-thread\3.1.5\include\rtservice.h
 .\objects\message_test.o: ..\watch\message\message_manager.h

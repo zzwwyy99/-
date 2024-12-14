@@ -34,7 +34,5 @@ PGame GetGame(void);
 void GameThreadEntry(void *arg);
 void GameThreadInit(void);
 
-void GameEntry(void);
-
 #endif	/*__GAME_SYSTEM_H*/
 

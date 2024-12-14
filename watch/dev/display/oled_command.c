@@ -1,7 +1,5 @@
 #include <stm32f10x.h>
 #include <stdio.h>
-#include <rtthread.h>
-#include <rthw.h>
 
 #include "i2c_system.h"
 
@@ -23,7 +21,6 @@ static int OLEDInfDevInit(void *frambuffer,int buffersize)
 	g_ptI2CDevice->iDMAmemBaseAddr = (int)frambuffer;
 	g_ptI2CDevice->iBufferSize = buffersize;
 	
-    g_ptI2CDevice->dam_cfg(g_ptI2CDevice);	//重新配置DMA
 	return 0;
 }
 
@@ -134,8 +131,8 @@ void oled_init(char *pFramBuffer,int iSize)
 	OLEDCommandSend(0xaf); //--turn on oled panel
 	
 	/*初始化IIC的DMA*/
-    //g_ptI2CDevice->dam_cfg(g_ptI2CDevice);	//完成DMA配置
-	//I2C_DMACmd(I2C1,ENABLE);				//开启DMA请求,这个请求只需要开启一次
+    g_ptI2CDevice->dam_cfg(g_ptI2CDevice);	//完成DMA配置
+	I2C_DMACmd(I2C1,ENABLE);				//开启DMA请求,这个请求只需要开启一次
 }
 
 
@@ -213,11 +210,12 @@ void oled_gram_refresh_onetime(unsigned char *gram)
 extern int iFPS;
 void oled_gram_refresh_dma(void)
 {
-    rt_interrupt_enter();
+	/* 每传输一次,需要重新配置DMA */	
 	if(OLED_I2C1_DMA_BUSYFLAG == 0){
         //printf("%dms刷新一次\r\n",iFPS*10);
         iFPS = 0;
-        
+        g_ptI2CDevice->dam_cfg(g_ptI2CDevice);	//重新配置DMA
+		
 		while(I2C_GetFlagStatus(I2C1,I2C_FLAG_BUSY));							//检测I2C是否繁忙
     
 		I2C_GenerateSTART(I2C1,ENABLE);											//开启I2C,发送起始信号
@@ -227,9 +225,7 @@ void oled_gram_refresh_dma(void)
 		while(!I2C_CheckEvent(I2C1,I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));//事件6发生,表明找到地址为0x78的外设
 		
 		I2C_SendData(I2C1,0x40);												//将addr写入DR寄存器
-		while(!I2C_CheckEvent(I2C1,I2C_EVENT_MASTER_BYTE_TRANSMITTED));		//EV8_2
-    
-        rt_interrupt_leave();
+		while(!I2C_CheckEvent(I2C1,I2C_EVENT_MASTER_BYTE_TRANSMITTED));			//EV8_2
 
 		/*打开DMA,允许DMA将数据从GRAM搬运到I2C->DR.*/
 		g_ptI2CDevice->dam_enable(g_ptI2CDevice);
@@ -237,7 +233,6 @@ void oled_gram_refresh_dma(void)
 		OLED_I2C1_DMA_BUSYFLAG = 1;				//DMA忙标志位
 	} 
 }
-
 
 //等待DMA传输完成，30ms左右.
 //擦写显存禁止,或许可以改成信号量,这样申请信号量就可以不用死等.
@@ -254,13 +249,14 @@ void WaitForI2CDMABusy(void)
 void DMA1_Channel6_IRQHandler(void)
 {
 	if(DMA_GetFlagStatus(DMA1_FLAG_TC6)){	//DMA传输完成
-        DMA_ClearFlag(DMA1_FLAG_TC6);		//清除传输完成标志位
+		DMA_ClearFlag(DMA1_FLAG_TC6);		//清除传输完成标志位
+        
+        //printf("传输一次完成\r\n");       //放在I2C_GenerateSTOP()前面屏幕会向右滚动,和设定DMA_SetCurrDataCounter(DMA_CHx,1024);时也是向右滚动.\
+              DMA_SetCurrDataCounter                                  效果等同于多发送了一个字节给oled.向右滚动是多发送了一个字节,向左滚动是少发送了一个字节
         
         //这个I2C_GenerateSTOP必须要有,否则I2C将一直是BUSY状态
         I2C_GenerateSTOP(I2C1,ENABLE);		//关闭I2C
- 
-        //printf("传输一次完成\r\n");       //放在I2C_GenerateSTOP()前面屏幕会向右滚动,和设定DMA_SetCurrDataCounter(DMA_CHx,1024);时也是向右滚动.\
-                                                效果等同于多发送了一个字节给oled.向右滚动是多发送了一个字节,向左滚动是少发送了一个字节
+		
  		/* 用信号量更合适 */
 		OLED_I2C1_DMA_BUSYFLAG = 0;			//DMA忙碌标志位,值为1:DMA正在传输数据,此时没法再开启一次传输,但是注意此时不要更改GRAM中的值 
 	}

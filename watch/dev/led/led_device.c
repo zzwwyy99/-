@@ -14,7 +14,7 @@ typedef struct LedDeviceManager{
 //LED设备管理器
 static LedDeviceManager g_tLedDeviceManager;
 
-/* 注册函数 */
+/*注册函数*/
 void LedDeviceRegister(struct LedDevice *ptLedDevice,char *name)
 {
 	/* 初始化LedDevice */
@@ -36,7 +36,7 @@ PLedDevice __GetLedDevice(char *name)
 			return ptLedDevice;			
 		}
 	}
-    
+
 	return NULL;
 }
 

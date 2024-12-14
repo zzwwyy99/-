@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_MD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\User;..\watch\cal;..\watch\drive;..\watch\input;..\watch\kal;..\watch\unittest;..\watch\dev\led;..\watch\dev\button;..\watch\dev\i2c;..\watch\dev\display;..\watch\text;..\watch\fontlib;..\watch\dev\beep;..\watch\dev\player;..\watch\game;..\watch\menu;..\watch\message;..\watch\logic;..\watch\thread\include;..\watch\thread\libcpu;..\watch\thread\src;..\watch\thread;..\watch\unitinit;..\watch\dev\rtc;..\watch\dev\dht11;..\rt-thread\3.1.5\bsp;..\rt-thread\3.1.5\include;..\rt-thread\3.1.5\components\finsh;..\rt-thread\3.1.5;..\rt-thread\3.1.5\bsp;..\rt-thread\3.1.5\bsp\a</IncludePath>
+              <IncludePath>..\Libraries\CMSIS;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\User;..\watch\cal;..\watch\drive;..\watch\input;..\watch\kal;..\watch\unittest;..\watch\dev\led;..\watch\dev\button;..\watch\dev\i2c;..\watch\dev\display;..\watch\text;..\watch\fontlib;..\watch\dev\beep;..\watch\dev\player;..\watch\game;..\watch\menu;..\watch\message;..\watch\logic;..\watch\thread\include;..\watch\thread\libcpu;..\watch\thread\src;..\watch\thread;..\watch\unitinit;..\watch\dev\rtc;..\watch\dev\dht11</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -543,16 +543,6 @@
               <FileName>stm32f10x_it.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\stm32f10x_it.c</FilePath>
-            </File>
-            <File>
-              <FileName>rtconfig.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\rt-thread\3.1.5\bsp\rtconfig.h</FilePath>
-            </File>
-            <File>
-              <FileName>board.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\bsp\board.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -982,6 +972,41 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>rtt/ports</GroupName>
+          <Files>
+            <File>
+              <FileName>rtconfig.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\watch\thread\rtconfig.h</FilePath>
+            </File>
+            <File>
+              <FileName>context_rvds.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\watch\thread\libcpu\context_rvds.s</FilePath>
+            </File>
+            <File>
+              <FileName>cpuport.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\watch\thread\libcpu\cpuport.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>rtt/source</GroupName>
+          <Files>
+            <File>
+              <FileName>scheduler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\watch\thread\src\scheduler.c</FilePath>
+            </File>
+            <File>
+              <FileName>thread.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\watch\thread\src\thread.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>unitinit</GroupName>
           <Files>
             <File>
@@ -1066,101 +1091,6 @@
             </File>
           </Files>
         </Group>
-        <Group>
-          <GroupName>rtt/source</GroupName>
-          <Files>
-            <File>
-              <FileName>clock.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\clock.c</FilePath>
-            </File>
-            <File>
-              <FileName>components.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\components.c</FilePath>
-            </File>
-            <File>
-              <FileName>cpu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\cpu.c</FilePath>
-            </File>
-            <File>
-              <FileName>idle.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\idle.c</FilePath>
-            </File>
-            <File>
-              <FileName>ipc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\ipc.c</FilePath>
-            </File>
-            <File>
-              <FileName>irq.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\irq.c</FilePath>
-            </File>
-            <File>
-              <FileName>kservice.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\kservice.c</FilePath>
-            </File>
-            <File>
-              <FileName>mem.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\mem.c</FilePath>
-            </File>
-            <File>
-              <FileName>memheap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\memheap.c</FilePath>
-            </File>
-            <File>
-              <FileName>mempool.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\mempool.c</FilePath>
-            </File>
-            <File>
-              <FileName>object.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\object.c</FilePath>
-            </File>
-            <File>
-              <FileName>scheduler.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\scheduler.c</FilePath>
-            </File>
-            <File>
-              <FileName>slab.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\slab.c</FilePath>
-            </File>
-            <File>
-              <FileName>thread.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\thread.c</FilePath>
-            </File>
-            <File>
-              <FileName>timer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\src\timer.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>rtt/ports</GroupName>
-          <Files>
-            <File>
-              <FileName>context_rvds.S</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\rt-thread\3.1.5\libcpu\arm\cortex-m3\context_rvds.S</FilePath>
-            </File>
-            <File>
-              <FileName>cpuport.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\rt-thread\3.1.5\libcpu\arm\cortex-m3\cpuport.c</FilePath>
-            </File>
-          </Files>
-        </Group>
       </Groups>
     </Target>
   </Targets>
@@ -1168,20 +1098,7 @@
   <RTE>
     <apis/>
     <components/>
-    <files>
-      <file attr="config" category="source" name="bsp\_template\board.c" version="3.1.5">
-        <instance index="0" removed="1">RTE\RTOS\board.c</instance>
-        <component Cbundle="RT-Thread" Cclass="RTOS" Cgroup="kernel" Cvendor="RealThread" Cversion="3.1.5" condition="CMSIS Core with RTOS"/>
-        <package name="RT-Thread" schemaVersion="1.4" url="https://www.rt-thread.org/download/mdk/" vendor="RealThread" version="3.1.5"/>
-        <targetInfos/>
-      </file>
-      <file attr="config" category="header" name="bsp\_template\rtconfig.h" version="3.1.5">
-        <instance index="0" removed="1">RTE\RTOS\rtconfig.h</instance>
-        <component Cbundle="RT-Thread" Cclass="RTOS" Cgroup="kernel" Cvendor="RealThread" Cversion="3.1.5" condition="CMSIS Core with RTOS"/>
-        <package name="RT-Thread" schemaVersion="1.4" url="https://www.rt-thread.org/download/mdk/" vendor="RealThread" version="3.1.5"/>
-        <targetInfos/>
-      </file>
-    </files>
+    <files/>
   </RTE>
 
   <LayerInfo>

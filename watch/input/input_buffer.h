@@ -15,6 +15,5 @@ typedef struct InputEventBuffer{
 int PutInputBuffer(InputEvent *ptInputEvent);
 int GetInputBuffer(InputEvent *ptInputEvent);
 
-
 #endif /*_INPUT_BUFFER_H*/
 

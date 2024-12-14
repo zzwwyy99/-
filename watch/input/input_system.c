@@ -2,7 +2,6 @@
 
 #include "input_device.h"
 #include "button_input.h" 
-#include "input_buffer.h"
 
 /* 添加输入设备 */
 void AddInputDevice(void)

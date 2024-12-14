@@ -29,13 +29,10 @@
 .\objects\main.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h
 .\objects\main.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
 .\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\main.o: ..\rt-thread\3.1.5\include\rtthread.h
-.\objects\main.o: ..\rt-thread\3.1.5\bsp\rtconfig.h
-.\objects\main.o: ..\rt-thread\3.1.5\include\rtdebug.h
-.\objects\main.o: ..\rt-thread\3.1.5\include\rtdef.h
-.\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
-.\objects\main.o: ..\rt-thread\3.1.5\include\rtservice.h
-.\objects\main.o: ..\rt-thread\3.1.5\include\rthw.h
+.\objects\main.o: ..\watch\thread\include\rtthread.h
+.\objects\main.o: ..\watch\thread\include\rtdef.h
+.\objects\main.o: ..\watch\thread\rtconfig.h
+.\objects\main.o: ..\watch\thread\include\rtservice.h
 .\objects\main.o: ..\watch\unitinit\usart_init.h
 .\objects\main.o: ..\watch\dev\button\button_system.h
 .\objects\main.o: ..\watch\dev\button\button_device.h
@@ -60,4 +57,4 @@
 .\objects\main.o: ..\watch\menu\node_manager.h
 .\objects\main.o: ..\watch\dev\rtc\rtc_system.h
 .\objects\main.o: ..\watch\dev\dht11\dht11_device.h
-.\objects\main.o: ..\watch\message\message_manager.h
+.\objects\main.o: ..\watch\thread\include\rthw.h

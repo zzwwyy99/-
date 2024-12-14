@@ -6,7 +6,6 @@
 #include "decode.h"
 #include "player_system.h"
 #include "song_data.h"
-#include "player_system.h"
 
 static struct audio_ops aduio;
 static struct decode_ops decode;
@@ -128,8 +127,7 @@ PPlayer PlayerInit(void)
 	PlayerAddSong(&g_tPlayer,(void*)&song5);
 
 	PlayerStart(&g_tPlayer);
-	g_tPlayer.status = PLAYER_STOP;
-    
+	PlayerControl(&g_tPlayer,PLAYER_CMD_PLAY,NULL);
 	PlayerShow(&g_tPlayer);
 
 	return &g_tPlayer;

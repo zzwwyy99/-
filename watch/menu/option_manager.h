@@ -14,8 +14,8 @@ enum OPTION_CMD{
 };
 
 enum OPTION_STATUS{
-	OPTION_CHOOSE,		//选定该选项
-	OPTION_ENTER		//进入该选项
+	OPTION_CHOOSE,		//选择选项
+	OPTION_ENTER		//进入选项
 };
 	
 typedef struct Option{
@@ -24,7 +24,7 @@ typedef struct Option{
 	enum OPTION_STATUS status;		
 	
 	void (*choose)(struct Option *ptOption);	//选定该选项
-	void (*enter)(struct Option *ptOption);		//进入该选项
+	void (*enter)(struct Option *ptOption);	//进入该选项
 }Option,*POption;	
 
 struct menu_status{

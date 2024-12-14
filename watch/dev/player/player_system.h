@@ -1,8 +1,6 @@
 #ifndef __PLAYER_SYSTEM_H
 #define __PLAYER_SYSTEM_H
 
-
-
 #ifndef NULL
 #define NULL (void *)0
 #endif
@@ -85,8 +83,5 @@ int PlayerAddSong(Player *ptPlayers,void *pSong);
 int PlayerStart(Player *ptPlayer);
 void PlayerThreadInit(void);
 void PlayerThreadEntry(void *arg);
-
-void PlayerEntry(void);
-
 #endif	/*__PLAYER_SYSTEM_H*/
 

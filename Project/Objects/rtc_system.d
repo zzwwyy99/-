@@ -31,12 +31,6 @@
 .\objects\rtc_system.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\rtc_system.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h
 .\objects\rtc_system.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
-.\objects\rtc_system.o: ..\rt-thread\3.1.5\include\rtthread.h
-.\objects\rtc_system.o: ..\rt-thread\3.1.5\bsp\rtconfig.h
-.\objects\rtc_system.o: ..\rt-thread\3.1.5\include\rtdebug.h
-.\objects\rtc_system.o: ..\rt-thread\3.1.5\include\rtdef.h
-.\objects\rtc_system.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
-.\objects\rtc_system.o: ..\rt-thread\3.1.5\include\rtservice.h
 .\objects\rtc_system.o: ..\watch\drive\drive_delay.h
 .\objects\rtc_system.o: ..\watch\drive\drive_rtc.h
 .\objects\rtc_system.o: ..\watch\dev\rtc\rtc_device.h

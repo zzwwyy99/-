@@ -1,17 +1,14 @@
 #include <stm32f10x.h>
 #include <stdio.h>
 #include <string.h>
-#include <rtthread.h>
 
 #include "message_manager.h"
 
-//extern rt_sem_t g_tMsgCentrerSem;
-////发布者
-
+//发送消息
 void Publish(void *arg)
 {
-	/* 发送信号量,唤醒消息中心线程 */
-   // rt_sem_release(g_tMsgCentrerSem);
+	//唤醒消息中心线程
+	CoreProcss(arg);
 }
 
 struct Publisher g_tPublisher = {

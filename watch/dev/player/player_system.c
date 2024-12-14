@@ -1,20 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stm32f10x.h>
-#include <rtthread.h>
 
-#include "option.h"
 #include "message_manager.h"
 #include "input_system.h"
 #include "player.h"
 #include "player_system.h"
 #include "drive_delay.h"
-
-extern rt_sem_t g_tPlayerSem;
-extern rt_event_t g_tPlayerGameEvent;
-extern rt_sem_t g_tBackToMenuSem;
-extern rt_thread_t g_ptPlayerThread;
-
 
 //这一层可以算是播放器控制台,可以再抽象出一层
 
@@ -25,8 +17,7 @@ int PlayerPlay(Player *ptPlayer)
 	}
 
 	/* 发送信号量 */
-    rt_sem_release(g_tPlayerSem);
-    
+	
 	return 0;
 }	
 
@@ -123,6 +114,7 @@ int PlayerControl(Player *ptPlayer,int iCmd,void *arg)
 }
 
 static PPlayer g_ptPlayerDev;
+
 int DefaultPlayerControl(int iCmd,void *arg)
 {	
 	switch(iCmd){
@@ -240,17 +232,12 @@ struct msg_topic g_tMsgPlayer = {
 	.msg_data = &player_status
 };
 
-extern rt_mailbox_t g_tMsgCentrerMb;
 //发布者
 void PlayerPublish(void *arg)
 {
-	/* 发送邮箱,唤醒消息中心线程 */
-    if(g_tMsgCentrerMb){
-        rt_mb_send(g_tMsgCentrerMb,(rt_uint32_t)&g_tMsgPlayer);
-    }
-    
+	//唤醒消息中心线程
+	CoreProcss(arg);
 }
-
 
 struct Publisher g_tPublisherPlayer = {
 	.Publish = PlayerPublish
@@ -267,17 +254,13 @@ void PlayerThreadInit(void)
     RegisterMessage("player_topic");
 }
 
-
 void PlayerThreadEntry(void *arg)
 {
     int buffer[PLAYER_BUFFER_SIZE], size; //20
-    
-	printf("Player Thread启动.\r\n");  
-    /* 等待播放的信号量 */
-    rt_sem_take(g_tPlayerSem, RT_WAITING_FOREVER);    
-    rt_thread_delay(300);
+
+	printf("Player Thread.\r\n");    
     while (1)
-    {        
+    {
         if (g_ptPlayerDev->status == PLAYER_RUNNING)
         {            
             size = g_ptPlayerDev->iSongTimeAll - g_ptPlayerDev->iSongTimePass;
@@ -305,11 +288,11 @@ void PlayerThreadEntry(void *arg)
             g_ptPlayerDev->audio->close();
 
             printf("播放停止.\r\n");
-            
+            delay(10000);
+           
             /* 等待播放的信号量 */
-           	rt_sem_take(g_tPlayerSem, RT_WAITING_FOREVER);
-            rt_kprintf("获得播放信号量.");
-            
+           // rt_sem_take(player->sem_play, RT_WAITING_FOREVER);
+
             /* 开始播放时打开音频设备*/
             //ptPlayerDev->audio->open();
         }

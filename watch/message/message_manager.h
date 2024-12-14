@@ -22,7 +22,7 @@ typedef struct Subcriber{
 
 int RegisterMessage(char *pcTopicName);
 int RegisterSubscriber(char *pcTopicName,struct Subcriber* ptSubcriber);
-void CoreProcssThreadEntry(void *arg);
+void CoreProcss(void *arg);
 
 #endif	/*__MESSAGE_MANAGER_H*/
 
