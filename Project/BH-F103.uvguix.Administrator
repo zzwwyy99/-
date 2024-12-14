@@ -93,8 +93,8 @@
       <flags>2</flags>
       <showCmd>3</showCmd>
       <MinPosition>
-        <xPos>-1</xPos>
-        <yPos>-1</yPos>
+        <xPos>-32000</xPos>
+        <yPos>-32000</yPos>
       </MinPosition>
       <MaxPosition>
         <xPos>-1</xPos>
@@ -3624,7 +3624,7 @@
       </Doc>
       <Doc>
         <Name>..\watch\dev\button\button_device.h</Name>
-        <ColumnNumber>28</ColumnNumber>
+        <ColumnNumber>36</ColumnNumber>
         <TopLine>1</TopLine>
         <CurrentLine>36</CurrentLine>
         <Folding>1</Folding>
@@ -3633,7 +3633,7 @@
       </Doc>
       <Doc>
         <Name>..\watch\input\button_input.c</Name>
-        <ColumnNumber>4</ColumnNumber>
+        <ColumnNumber>3</ColumnNumber>
         <TopLine>18</TopLine>
         <CurrentLine>50</CurrentLine>
         <Folding>1</Folding>
@@ -3696,7 +3696,7 @@
       </Doc>
       <Doc>
         <Name>..\watch\dev\player\player.c</Name>
-        <ColumnNumber>56</ColumnNumber>
+        <ColumnNumber>62</ColumnNumber>
         <TopLine>51</TopLine>
         <CurrentLine>72</CurrentLine>
         <Folding>1</Folding>
